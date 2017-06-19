@@ -1,6 +1,5 @@
 # express.js
 
---------------
 1.入口文件`index.js`只有一句代码
 `module.exports = require('./lib/express.js');`<br>
 因此我们首先从`express.js`开始看.
