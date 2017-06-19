@@ -32,7 +32,7 @@ function createApplication() {
 }
 ```
 这部分代码是express.js主要内容,暴露了一个创建方法.方法里面的app也是一个函数。<br>
-至于为啥用一个函数而不用对象暂时没想到。然后用混入`mixin`方法获取`EventEmitter.prototype` 和`application.js里面暴露的方法和属性`.
+至于为啥用一个函数而不用对象暂时没想到。然后用混入`mixin`方法获取`EventEmitter.prototype` 和`application.js里面暴露的方法和属性`.
 然后再给app两个属性`request`和`response` 这个两个属性是用`Object.create`函数生成 既继承了`response.js` `request.js`所暴露的东西,还设置文件标识符的值.最后再调用`application.js`的init方法并返回app。
 
 ```javascript
