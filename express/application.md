@@ -170,7 +170,7 @@ app.handle = function handle(req, res, callback) {
 ```
 1.获取路由属性```_router```<br>
 2.判断是否有callback 假如没有就```finalhandler``` (这finalhandler是一个只进行错误处理的callback)<br>
-3.判断是否没有router (不过这是express开发者的调试判断 正常是不会进去的)
+3.判断是否没有router (不过这是express开发者的调试判断 正常是不会进去的)<br>
 4.然后交由路由处理
 
 ## 7 app.use()
@@ -340,10 +340,10 @@ app.set = function set(setting, val) {
   return this;
 };
 ```
-将想要保存的配置信息保存在```app```的```setting```属性
-1.假如只有一个参数 则是getter方法
-2.在```setting```属性设置键值
-3.假如要设置的键名是```etag``` ```query parser``` ```trust proxy```其中一个 则另做处理
+将想要保存的配置信息保存在```app```的```setting```属性<br>
+1.假如只有一个参数 则是getter方法<br>
+2.在```setting```属性设置键值<br>
+3.假如要设置的键名是```etag``` ```query parser``` ```trust proxy```其中一个 则另做处理<br>
 
 ## 12 app.path()
 ```javascript
@@ -407,12 +407,12 @@ methods.forEach(function(method){
 });
 
 ```
-```methods```是模块```methods```所暴露的方法
-是为了获取http所有VERB 
-1.将VERB数组进行遍历
-2.给```app```添加所有VERB的方法 
-3.该方法是 假如```get```方法 而且参数只有一个 则判断为是调用```app.set```方法
-4.假如不是 则调用```route.VERB```方法进行处理
+```methods```是模块```methods```所暴露的方法<br>
+是为了获取http所有VERB <br>
+1.将VERB数组进行遍历<br>
+2.给```app```添加所有VERB的方法 <br>
+3.该方法是 假如```get```方法 而且参数只有一个 则判断为是调用```app.set```方法<br>
+4.假如不是 则调用```route.VERB```方法进行处理<br>
 
 ## 18 app.all()
 ```javascript
