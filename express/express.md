@@ -1,5 +1,19 @@
 # express.js
 
+## 模块导入
+```javascript
+var EventEmitter = require('events').EventEmitter;
+var mixin = require('merge-descriptors');
+var proto = require('./application');
+var Route = require('./router/route');
+var Router = require('./router');
+var req = require('./request');
+var res = require('./response');
+
+```
+快速引入某些模块
+
+## 代码主体
 1.入口文件`index.js`只有一句代码
 `module.exports = require('./lib/express.js');`<br>
 因此我们首先从`express.js`开始看.
