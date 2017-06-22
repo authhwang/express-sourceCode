@@ -62,8 +62,8 @@ this._router = new Router({
 function router(req, res, next) {
     router.handle(req, res, next);
   }
-
-``` 其实我觉得没必要将router写成函数 因为在```application.js```中的app.handle上也是执行```router.hanlde```方法 整个源码都不会直接执行```router(req,res,next)``` 所以感觉没必要(知道为啥需要写成函数 因为可能会直接用```app.use(router)```来使用路由中间件)
+``` 
+其实我觉得没必要将router写成函数 因为在```application.js```中的app.handle上也是执行```router.hanlde```方法 整个源码都不会直接执行```router(req,res,next)``` 所以感觉没必要(知道为啥需要写成函数 因为可能会直接用```app.use(router)```来使用路由中间件)
 
 3.将router函数与本身的```route```做原型绑定 那可以通过router获取route里暴露的方法
 
