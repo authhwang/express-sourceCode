@@ -20,7 +20,7 @@ var toString = Object.prototype.toString;
 
 ```
 
-# 2 导出对象与初始化配置
+## 2 导出对象与初始化配置
 ```javascript
 /**
  * Initialize a new `Router` with the given `options`.
@@ -75,7 +75,7 @@ function router(req, res, next) {
  - [strict]
  - [stack]
 
-## 2 router.use()
+## 3 router.use()
 ```javascript
 /**
  * Use the given middleware function, with optional path, defaulting to "/".
@@ -221,7 +221,7 @@ this._router.use(query(this.get('query parser fn')));
 this._router.use(middleware.init(this));
 ```
 
-## 3 router.route()
+## 4 router.route()
 
 ```javascript
 /**
@@ -260,7 +260,7 @@ proto.route = function route(path) {
 3.将```Layer```对象放进新的```router```的```stack```队列上<br>
 4.返回新的```router```<br>
 
-## VERB方法
+## 5 VERB方法
 ```javascript
 methods.concat('all').forEach(function(method){
   proto[method] = function(path){
@@ -272,7 +272,7 @@ methods.concat('all').forEach(function(method){
 ```
 将all方法也加上 遍历VERB数组给router[VERB]设置函数： 根据路径创建一个新```route``` 并调用```route```的VERB方法
 
-## router.param()
+## 6 router.param()
 ```javascript
 /**
  * Map the given param placeholder `name`(s) to the given callback.
