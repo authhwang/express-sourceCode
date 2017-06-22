@@ -1,6 +1,6 @@
 # application.js
 
-## 1.模块依赖
+## 1 模块依赖
 
 ```javascript
 var finalhandler = require('finalhandler');
@@ -21,13 +21,13 @@ var resolve = require('path').resolve;
 var setPrototypeOf = require('setprototypeof')
 var slice = Array.prototype.slice;
 ```
-## 2.导出对象
+## 2 导出对象
 ```javascript
 var app = exports = module.exports = {};
 ```
 整个文件暴露就是这个app对象 初始化时里面没有东西的 后面会补充。
 
-## 3.app.init()
+## 3 app.init()
 ```javascript
 app.init = function init() {
   this.cache = {};
@@ -39,7 +39,7 @@ app.init = function init() {
 ```
 添加三个空对象属性 cache engines setting 后面会补充内容 
 
-## 4.app.defaultConfiguration()
+## 4 app.defaultConfiguration()
 ```javascript
 app.defaultConfiguration = function defaultConfiguration() {
   var env = process.env.NODE_ENV || 'development';
