@@ -696,3 +696,22 @@ proto.process_params = function process_params(layer, called, req, res, done) {
 	2.调用`fn`<br>
 	3.老铁要注意 在预处理函数下第三个是next 在这里其实把`paramCallback`放了进去 让`paramIndex `自加 有一个就继续一个 没有就跳出函数<br>
  
+ 
+ 
+ 总结:
+ 
+ 写到这里其实大概了解整个express的流程 先用文字写下怕忘记
+ 刚创建一个express()时会有一个懒加载的router
+ 当假如是app.get这样的话 就会创建一个route 创建的时候会把一个新的layer和该route绑定 放在总的router的stack上 然后调用route的verb方法 创建一个新的layer并将回调方法放在route的stack上
+ 当执行的时候会先执行router上的route 然后执行route的dispatch方法来调用里面自身里面的回调
+ 
+ 
+ 假如回调里调用了next 就会回到router.handle里的next方法 这样就会回到在那个while循环里进行下一个中间件
+ 
+ 假如直接用router 创建路由中间件 router.use方法就会把你想做的处理放在这个router的stack上 然后将这个中间件放到总的router的stack上 由于router本身就是个函数 当她被调用的时候 还是调回自身的router.handle上 然后再去处理里面的stack
+ 
+ 常用的两种路由加载原理就是这样 后面的只是补充
+ 
+ 
+ 
+ 
