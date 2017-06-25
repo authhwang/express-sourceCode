@@ -560,7 +560,7 @@ proto.handle = function handle(req, res, out) {
     - [layer -中间件]
     - [match]
     - [route]
-      9.进入循环 （这个循环是路径符合的就会跳过循环 不符合的则继续循环）
+      9.进入循环 （这个循环是路径符合的就会跳过循环 不符合的则继续循环)<br>
        1.获取index为`idx`的中间件 设置给`layer` 然后`idx`加一<br>
        2.执行`layer.match(path)` 判断是否相同<br>
        3.获取`layer.route` 设置给`route`<br>
@@ -685,12 +685,12 @@ proto.process_params = function process_params(layer, called, req, res, done) {
    - [paramCalled -called[name]]
    - [paramIndex -可能一个请求参数有几个预处理函数 当下一个请求参数会重新置0]
 
-4.调用`param()`
+4.调用`param()`<br>
    -1.假如`paramVal === undefined`则表示没有该参数 `!paramCallbacks`表示没有该参数预处理方法<br>
    -2.假如之前有调用过或者有报错的则直接调用`param(paramCalled.error)`进入下一轮<br>
    -3.对`called`变量进行设置 这变量就是`router.hanlde`调用时创建的属性`paramcalled` 用于在该函数下全局保存预处理信息<br>
    -4.调用预处理函数`paramCallback ()`<br>
-   -5.调用`paramCallback()`
+   -5.调用`paramCallback()`<br>
    ----1.在`paramCallbacks`数组下获取预处理函数<br>
    ----2.调用`fn`<br>
    ----3.老铁要注意 在预处理函数下第三个是next 在这里其实把`paramCallback`放了进去 让`paramIndex`自加 有一个就继续一个 没有就跳出函数<br>
