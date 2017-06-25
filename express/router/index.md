@@ -62,18 +62,18 @@ this._router = new Router({
 function router(req, res, next) {
     router.handle(req, res, next);
   }
-``` 
+```
 其实我觉得没必要将router写成函数 因为在```application.js```中的app.handle上也是执行```router.hanlde```方法 整个源码都不会直接执行```router(req,res,next)``` 所以感觉没必要(知道为啥需要写成函数 因为可能会直接用```app.use(router)```来使用路由中间件)
 
 3.将router函数与本身的```route```做原型绑定 那可以通过router获取route里暴露的方法
 
 4.初始化要保存信息的配置 并将router返回
- - [params]
- - [_params]
- - [caseSensitive]
- - [mergeParams]
- - [strict]
- - [stack]
+- [params]
+- [_params]
+- [caseSensitive]
+- [mergeParams]
+- [strict]
+- [stack]
 
 ## 3 router.use()
 ```javascript
@@ -532,60 +532,59 @@ proto.handle = function handle(req, res, out) {
 ```
 贼长 感觉要分几部分来看才行 
 1.设置几个变量
- - [idx -中间件队列的index]
- - [protohost -假如直接使用'/'则'' 不然则获取主机名]
- - [remove]
- - [slashAdded -去除第一个'/' 默认为false]
- - [paramcalled]
- - [options -在VERB为option时使用]
- - [stack -获取该```router```的stack]
- - [parentParams -req的请求参数]
- - [parentUrl -req的请求路径的根路径 假如没有则'']
- - [done -保存调用时的req中```baseurl```,```next```,```params```属性的值，并返回一个函数 该函数包含可以当时保存的值并修改到req 然后调用```out```函数]<br>
-2.设置```next```函数到```req.next```<br>
-3.假如是```option```请求 将```done```变量修改成有默认响应假如没有东西响应<br>
-4.设置```req.baseUrl```为parentUrl<br>
-5.设置```req.originalUrl``` 自身有就自身 没有就为''(req.originalUrl 就是路径加请求参数)<br>
-6.调用```next()```<br>
-7. *`next(err)`的实现
- 		1.设置变量```layerError ``` 判断```err```参数是否等于'route'如果是则为null 否则为err<br>
- 		2.如果```slashAdded ```为true 则去除第一个'/' <br>
- 		3.判断`removed` 假如有则修改`req.url`<br>
- 		4.如果`layerError`等于'router' 则异步调用`done` 并return<br>
- 		5.如果`idx`>=`stack.length`则异步调用```javascript 
-setImmediate(done, layerError);
-```  并return
-		6.获取`req.pathname`设置到`path`
-		7.如果`path`为null则调用`done(laterError)`
-		8.设置三个变量
-			- [layer -中间件]
-			- [match]
-			- [route]
-		9.进入循环 （这个循环是路径符合的就会跳过循环 不符合的则继续循环）
-		   1.获取index为`idx`的中间件 设置给`layer` 然后`idx`加一<br>
-		   2.执行`layer.match(path)` 判断是否相同<br>
-		   3.获取`layer.route` 设置给`route`<br>
-		   4.如果`match`不为boolean 则是err 那么`layerError = layerError || match;`<br>
-		   5.如果`match`不为true 则路径不匹配 就会跳过这轮进入下一轮<br>
-		   6.如果`layer`不含`route` 则直接跳过循环 执行循环下面的代码<br>
-		   7. 如果`layerError`有值 则一直循环 <br>
-			8.获取`req.method` 设置给`method`<br>
-			9.判断`route`是否含有该VERB方法 有则返回`ture`<br>
-			10.如果`has_method`为false 并`method`为`option` 则创建默认的响应<br>
-			11.如果`has_method`为false 并`method`不为`HEAD ` 则将`match`设置为false 并跳过该循环<br>
-		10.假如`match`不为true 则调用`done(layerError)`<br>
-		11.将`layer.route`保存在`req.route`<br>
-		12.设置`req.params` 并与`layer.params` 相添加(不过layer.params为undefined)
-		13.设置`layer.path` 为变量`laterPath`
-		14.调用`router.process_params()`进行参数预处理
-		
+- [idx -中间件队列的index]
+- [protohost -假如直接使用'/'则'' 不然则获取主机名]
+- [remove]
+- [slashAdded -去除第一个'/' 默认为false]
+- [paramcalled]
+- [options -在VERB为option时使用]
+- [stack -获取该```router```的stack]
+- [parentParams -req的请求参数]
+- [parentUrl -req的请求路径的根路径 假如没有则'']
+- [done -保存调用时的req中```baseurl```,```next```,```params```属性的值，并返回一个函数 该函数包含可以当时保存的值并修改到req 然后调用```out```函数]<br>
+  2.设置```next```函数到```req.next```<br>
+  3.假如是```option```请求 将```done```变量修改成有默认响应假如没有东西响应<br>
+  4.设置```req.baseUrl```为parentUrl<br>
+  5.设置```req.originalUrl``` 自身有就自身 没有就为''(req.originalUrl 就是路径加请求参数)<br>
+  6.调用```next()```<br>
+  7. `next(err)`的实现
+    1.设置变量```layerError ``` 判断```err```参数是否等于'route'如果是则为null 否则为err<br>
+    2.如果`slashAdded`为true 则去除第一个'/' <br>
+    3.判断`removed` 假如有则修改`req.url`<br>
+    4.如果`layerError`等于'router' 则异步调用`done` 并return<br>
+    5.如果`idx`>=`stack.length`则异步调用
+    `setImmediate(done, layerError);`并return
+    6.获取`req.pathname`设置到`path`
+    7.如果`path`为null则调用`done(laterError)`
+    8.设置三个变量
+    - [layer -中间件]
+    - [match]
+    - [route]
+      9.进入循环 （这个循环是路径符合的就会跳过循环 不符合的则继续循环）
+       1.获取index为`idx`的中间件 设置给`layer` 然后`idx`加一<br>
+       2.执行`layer.match(path)` 判断是否相同<br>
+       3.获取`layer.route` 设置给`route`<br>
+       4.如果`match`不为boolean 则是err 那么`layerError = layerError || match;`<br>
+       5.如果`match`不为true 则路径不匹配 就会跳过这轮进入下一轮<br>
+       6.如果`layer`不含`route` 则直接跳过循环 执行循环下面的代码<br>
+       7. 如果`layerError`有值 则一直循环 <br>
+          8.获取`req.method` 设置给`method`<br>
+          9.判断`route`是否含有该VERB方法 有则返回`ture`<br>
+          10.如果`has_method`为false 并`method`为`option` 则创建默认的响应<br>
+          11.如果`has_method`为false 并`method`不为`HEAD ` 则将`match`设置为false 并跳过该循环<br>
+          10.假如`match`不为true 则调用`done(layerError)`<br>
+          11.将`layer.route`保存在`req.route`<br>
+          12.设置`req.params` 并与`layer.params` 相添加(不过layer.params为undefined)
+          13.设置`layer.path` 为变量`laterPath`
+          14.调用`router.process_params()`进行参数预处理
+
 ## 8 route.process_params()
 ```javascript
 
 /**
- * Process any parameters for the layer.
- * @private
- */
+* Process any parameters for the layer.
+* @private
+   */
 
 
 proto.process_params = function process_params(layer, called, req, res, done) {
@@ -613,38 +612,38 @@ proto.process_params = function process_params(layer, called, req, res, done) {
     if (err) {
       return done(err);
     }
-
+    
     if (i >= keys.length ) {
       return done();
     }
-
+    
     paramIndex = 0;
     key = keys[i++];
     name = key.name;
     paramVal = req.params[name];
     paramCallbacks = params[name];
     paramCalled = called[name];
-
+    
     if (paramVal === undefined || !paramCallbacks) {
       return param();
     }
-
+    
     // param previously called with same value or error occurred
     if (paramCalled && (paramCalled.match === paramVal
       || (paramCalled.error && paramCalled.error !== 'route'))) {
       // restore value
       req.params[name] = paramCalled.value;
-
+    
       // next param
       return param(paramCalled.error);
     }
-
+    
     called[name] = paramCalled = {
       error: null,
       match: paramVal,
       value: paramVal
     };
-
+    
     paramCallback();
   }
 
@@ -654,16 +653,16 @@ proto.process_params = function process_params(layer, called, req, res, done) {
 
     // store updated value
     paramCalled.value = req.params[key.name];
-
+    
     if (err) {
       // store error
       paramCalled.error = err;
       param(err);
       return;
     }
-
+    
     if (!fn) return param();
-
+    
     try {
       fn(req, res, paramCallback, paramVal, key.name);
     } catch (e) {
@@ -673,45 +672,48 @@ proto.process_params = function process_params(layer, called, req, res, done) {
 
   param();
 };
-
 ```
 进行参数的预处理 
-1.获取注册过的```this.params```<br>
+1.获取注册过的`this.params`<br>
 2.获取`layer`中的请求参数 假如该中间件没有请求参数 则调用`done`<br>
-3.*设置变量
-	- [i]
-	- [key -keys[i++]]
-	- [name -key.name]
-	- [paramVal -req.params[name]]
-	- [paramCallbacks -params[name]]
-	- [paramCalled -called[name]]
-	- [paramIndex -可能一个请求参数有几个预处理函数 当下一个请求参数会重新置0]<br>
+3.设置变量
+- [i]
+   - [key -keys[i++]]
+   - [name -key.name]
+   - [paramVal -req.params[name]]
+   - [paramCallbacks -params[name]]
+   - [paramCalled -called[name]]
+   - [paramIndex -可能一个请求参数有几个预处理函数 当下一个请求参数会重新置0]
+
 4.调用`param()`
-	1.假如`paramVal === undefined` 则表示没有该参数 `!paramCallbacks`表示没有该参数预处理方法<br>
-	2.假如之前有调用过或者有报错的则直接调用`param(paramCalled.error)`进入下一轮<br>
-	3.对`called`变量进行设置 这变量就是`router.hanlde`调用时创建的属性`paramcalled` 用于在该函数下全局保存预处理信息<br>
-	4.调用预处理函数`paramCallback ()`<br>
-5.调用`paramCallback()`
-	1.在`paramCallbacks `数组下获取预处理函数<br>
-	2.调用`fn`<br>
-	3.老铁要注意 在预处理函数下第三个是next 在这里其实把`paramCallback`放了进去 让`paramIndex `自加 有一个就继续一个 没有就跳出函数<br>
- 
- 
- 
+   -1.假如`paramVal === undefined`则表示没有该参数 `!paramCallbacks`表示没有该参数预处理方法<br>
+   -2.假如之前有调用过或者有报错的则直接调用`param(paramCalled.error)`进入下一轮<br>
+   -3.对`called`变量进行设置 这变量就是`router.hanlde`调用时创建的属性`paramcalled` 用于在该函数下全局保存预处理信息<br>
+   -4.调用预处理函数`paramCallback ()`<br>
+   -5.调用`paramCallback()`
+   ----1.在`paramCallbacks`数组下获取预处理函数<br>
+   ----2.调用`fn`<br>
+   ----3.老铁要注意 在预处理函数下第三个是next 在这里其实把`paramCallback`放了进去 让`paramIndex`自加 有一个就继续一个 没有就跳出函数<br>
+
+
+
  总结:
- 
+
  写到这里其实大概了解整个express的流程 先用文字写下怕忘记
  刚创建一个express()时会有一个懒加载的router
  当假如是app.get这样的话 就会创建一个route 创建的时候会把一个新的layer和该route绑定 放在总的router的stack上 然后调用route的verb方法 创建一个新的layer并将回调方法放在route的stack上
- 当执行的时候会先执行router上的route 然后执行route的dispatch方法来调用里面自身里面的回调
- 
- 
+ 当执行的时候会先执行router上的layer layer的方法绑定 route 然后执行route的dispatch方法来调用route本身的stack里layer自身里面的方法
+
+
  假如回调里调用了next 就会回到router.handle里的next方法 这样就会回到在那个while循环里进行下一个中间件
- 
- 假如直接用router 创建路由中间件 router.use方法就会把你想做的处理放在这个router的stack上 然后将这个中间件放到总的router的stack上 由于router本身就是个函数 当她被调用的时候 还是调回自身的router.handle上 然后再去处理里面的stack
- 
+
+ 假如直接用express.router 创建新的路的router router.use方法就会把你想做的处理放在这个router的stack上 然后将这个中间件放到总的router的stack上 由于router本身就是个函数 当她被调用的时候 还是调回自身的router.handle上 然后再去处理里面的stack
+
  常用的两种路由加载原理就是这样 后面的只是补充
+
  
- 
- 
- 
+
+
+```
+
+```
