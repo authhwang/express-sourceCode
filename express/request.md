@@ -403,4 +403,151 @@ defineGetter(req, 'ips', function ips() {
 ```
 假如有设置代理 则会返回代理地址加客户端地址
 
+## 15 req.subdomains
+```javascript
+/**
+ * Return subdomains as an array.
+ *
+ * Subdomains are the dot-separated parts of the host before the main domain of
+ * the app. By default, the domain of the app is assumed to be the last two
+ * parts of the host. This can be changed by setting "subdomain offset".
+ *
+ * For example, if the domain is "tobi.ferrets.example.com":
+ * If "subdomain offset" is not set, req.subdomains is `["ferrets", "tobi"]`.
+ * If "subdomain offset" is 3, req.subdomains is `["tobi"]`.
+ *
+ * @return {Array}
+ * @public
+ */
 
+defineGetter(req, 'subdomains', function subdomains() {
+  var hostname = this.hostname;
+
+  if (!hostname) return [];
+
+  var offset = this.app.get('subdomain offset');
+  var subdomains = !isIP(hostname)
+    ? hostname.split('.').reverse()
+    : [hostname];
+
+  return subdomains.slice(offset);
+});
+
+``` 
+返回子域名 可根据`subdomain offset`来做偏移获取
+
+## 16 req.pathname
+```javascript
+/**
+ * Short-hand for url.parse(req.url).pathname.
+ *
+ * @return {String}
+ * @public
+ */
+
+defineGetter(req, 'path', function path() {
+  return parse(this).pathname;
+});
+
+```
+`url.parse(req.url).pathname` 的简写 获取url中的路径信息
+
+## 17 req.hostname
+```javascript
+
+/**
+ * Parse the "Host" header field to a hostname.
+ *
+ * When the "trust proxy" setting trusts the socket
+ * address, the "X-Forwarded-Host" header field will
+ * be trusted.
+ *
+ * @return {String}
+ * @public
+ */
+
+defineGetter(req, 'hostname', function hostname(){
+  var trust = this.app.get('trust proxy fn');
+  var host = this.get('X-Forwarded-Host');
+
+  if (!host || !trust(this.connection.remoteAddress, 0)) {
+    host = this.get('Host');
+  }
+
+  if (!host) return;
+
+  // IPv6 literal support
+  var offset = host[0] === '['
+    ? host.indexOf(']') + 1
+    : 0;
+  var index = host.indexOf(':', offset);
+
+  return index !== -1
+    ? host.substring(0, index)
+    : host;
+});
+
+```
+获取主机名
+
+## 18 req.fresh
+
+```javascript
+defineGetter(req, 'fresh', function(){
+  var method = this.method;
+  var res = this.res
+  var status = res.statusCode
+
+  // GET or HEAD for weak freshness validation only
+  if ('GET' !== method && 'HEAD' !== method) return false;
+
+  // 2xx or 304 as per rfc2616 14.26
+  if ((status >= 200 && status < 300) || 304 === status) {
+    return fresh(this.headers, {
+      'etag': res.get('ETag'),
+      'last-modified': res.get('Last-Modified')
+    })
+  }
+
+  return false;
+});
+
+```
+判断是否需要刷新 通过请求头部的`ETag`和`Last-Modified`的信息
+
+## 19 req.stale
+
+```javascript
+/**
+ * Check if the request is stale, aka
+ * "Last-Modified" and / or the "ETag" for the
+ * resource has changed.
+ *
+ * @return {Boolean}
+ * @public
+ */
+
+defineGetter(req, 'stale', function stale(){
+  return !this.fresh;
+});
+
+```
+
+检车请求是否是旧的 即`Last-Modified`或者`ETag`是否被更改了
+
+## 20 req.xhr
+
+```javascript
+/**
+ * Check if the request was an _XMLHttpRequest_.
+ *
+ * @return {Boolean}
+ * @public
+ */
+
+defineGetter(req, 'xhr', function xhr(){
+  var val = this.get('X-Requested-With') || '';
+  return val.toLowerCase() === 'xmlhttprequest';
+});
+```
+检查请求是否是`XMLHttpRequest`
